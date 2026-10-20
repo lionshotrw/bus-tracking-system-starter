@@ -1,11 +1,90 @@
-cat > src/screens/AuthScreen.tsx <<'AS' import React, { useState } from 'react'; import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native'; import type { NativeStackScreenProps } from '@react-navigation/native-stack'; import { RootStackParamList } from '../../App'; import { supabase } from '../lib/supabase';
+import React, { useState } from 'react';
+import {
+  Alert,
+  Button,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
+import * as Linking from 'expo-linking';
+import { supabase } from '../lib/supabase';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Auth'>;
+export default function AuthScreen() {
+  const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
 
-export default function AuthScreen({ navigation }: Props) { const [email, setEmail] = useState(''); const [loading, setLoading] = useState(false);
+  const signIn = async () => {
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email: email.trim(),
+        options: {
+          emailRedirectTo: Linking.createURL('auth/callback'),
+        },
+      });
+      if (error) {
+        throw error;
+      }
+      Alert.alert(
+        'Check your inbox',
+        'Open the sign-in link on this device to finish signing in.',
+      );
+    } catch (error) {
+      Alert.alert(
+        'Could not sign in',
+        error instanceof Error ? error.message : 'Please try again.',
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
-const signIn = async () => { setLoading(true); try { const { error } = await supabase.auth.signInWithOtp({ email }); if (error) throw error; Alert.alert('Check your inbox', 'A sign-in link has been sent to your email.'); navigation.replace('Home'); } catch (error: any) { Alert.alert('Error', error.message || 'Could not sign in'); } finally { setLoading(false); } };
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Bus Tracking System</Text>
+      <Text style={styles.subtitle}>Sign in with your email</Text>
+      <TextInput
+        autoCapitalize="none"
+        autoComplete="email"
+        keyboardType="email-address"
+        onChangeText={setEmail}
+        placeholder="you@example.com"
+        style={styles.input}
+        value={email}
+      />
+      <Button
+        disabled={!email.trim() || loading}
+        onPress={() => void signIn()}
+        title={loading ? 'Sending…' : 'Send magic link'}
+      />
+    </View>
+  );
+}
 
-return ( <View style={styles.container}> <Text style={styles.title}>Bus Tracking System</Text> <Text style={styles.subtitle}>Sign in with your email</Text> <TextInput placeholder="you@example.com" keyboardType="email-address" autoCapitalize="none" style={styles.input} value={email} onChangeText={setEmail} /> <Button title={loading ? 'Sending...' : 'Send magic link'} onPress={signIn} disabled={!email || loading} /> </View> ); }
-
-const styles = StyleSheet.create({ container: { flex: 1, justifyContent: 'center', padding: 16 }, title: { fontSize: 28, textAlign: 'center', marginBottom: 8, fontWeight: '700' }, subtitle: { fontSize: 16, textAlign: 'center', marginBottom: 16, color: '#555' }, input: { borderWidth: 1, borderColor: '#cfcfcf', borderRadius: 8, padding: 12, marginBottom: 16 } }); AS
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 20,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: '700',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  subtitle: {
+    color: '#555',
+    fontSize: 16,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  input: {
+    borderColor: '#cfcfcf',
+    borderRadius: 8,
+    borderWidth: 1,
+    marginBottom: 16,
+    padding: 12,
+  },
+});

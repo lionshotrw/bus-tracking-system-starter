@@ -1,1 +1,16 @@
-{ "expo": { "name": "Bus Tracking System", "slug": "bus-tracking-system", "version": "0.1.0", "platforms": ["ios", "android", "web"], "extra": { "SUPABASE_URL": "", "SUPABASE_ANON_KEY": "" } } }
+{
+  "expo": {
+    "name": "Bus Tracking System",
+    "slug": "bus-tracking-system",
+    "scheme": "bus-tracking-system",
+    "version": "0.1.0",
+    "platforms": ["ios", "android", "web"],
+    "web": {
+      "bundler": "metro"
+    },
+    "extra": {
+      "SUPABASE_URL": "",
+      "SUPABASE_ANON_KEY": ""
+    }
+  }
+}
