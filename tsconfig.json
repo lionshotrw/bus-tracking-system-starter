@@ -1,1 +1,17 @@
-cat > tsconfig.json <<'TSC' { "compilerOptions": { "target": "ESNext", "module": "ESNext", "jsx": "react-jsx", "strict": true, "moduleResolution": "Node", "esModuleInterop": true, "skipLibCheck": true, "allowJs": true, "resolveJsonModule": true, "isolatedModules": true, "noEmit": true, "types": ["react", "react-native"] }, "include": ["src", "App.tsx"] } TSC
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "jsx": "react-jsx",
+    "strict": true,
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "types": ["node", "react", "react-native"]
+  },
+  "include": ["src", "App.tsx"]
+}
